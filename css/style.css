@@ -1,0 +1,285 @@
+/* Base (default to dark) */
+:root {
+  color-scheme: dark light;
+}
+
+/* Fonts */
+@font-face {
+  font-family: "UIPrimaryFont";
+  src: url("../fonts/569ce4b8f30dc480-s.p.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "WalletAddressFont";
+  src: url("../fonts/5d258b355fefebcb-s.p.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Ensure borders and padding are included in width calculations */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: auto; /* allow scrolling */
+}
+
+body {
+  margin: 0;
+  background-color: #1a1a1a; /* default dark */
+  color: #eaeaea;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Light theme when user prefers light */
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #ffffff;
+    color: #111111;
+  }
+}
+
+/* Layout */
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: block;
+  min-height: 100vh;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field-group {
+  display: grid;
+  gap: 8px;
+}
+
+/* Add a little extra space between stacked field groups */
+.field-group + .field-group {
+  margin-top: 10px;
+}
+
+.input-affix {
+  position: relative;
+}
+
+.label {
+  font-size: 14px;
+  color: #B0B0B0; /* as requested for dark theme */
+  font-family: "WalletAddressFont", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
+}
+
+/* Slightly bold specific labels */
+.label[for="addr"],
+.label[for="amount"] {
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  max-width: 100%;
+  background: transparent;
+  color: inherit;
+  border: 1px solid #333; /* as requested for dark theme */
+  border-radius: 8px;
+  padding: 12px 16px; /* equal horizontal padding */
+  height: 53px; /* requested input height */
+  font-size: 16px;
+  outline: none;
+}
+
+.input-with-suffix {
+  padding-right: 150px; /* more space for actions */
+}
+
+/* Predefined wallet address input font */
+#addr {
+  font-family: "UIPrimaryFont", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.input::placeholder {
+  color: #9a9a9a;
+}
+
+.input:focus {
+  border-color: #48ff91;
+}
+
+/* Remove number input spinners for consistent right padding */
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.suffix {
+  position: absolute;
+  inset: 0 10px 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none; /* allow clicks to pass through except Max */
+}
+
+.currency {
+  color: #bdbdbd;
+  font-size: 14px;
+}
+
+.max-btn {
+  background: none;
+  border: 0;
+  color: #48ff91; /* requested color */
+  font-weight: 600;
+  font-size: 14px;
+  cursor: default;
+  padding: 4px 6px;
+  border-radius: 6px;
+  pointer-events: none; /* non-clickable */
+}
+.addr-actions .action-btn,
+.addr-actions .icon-btn {
+  background: none;
+  border: 0;
+  color: #48ff91;
+  font-weight: 600;
+  cursor: default;
+  pointer-events: none; /* non-clickable */
+}
+
+.addr-actions .action-btn {
+  font-size: 14px;
+}
+
+.addr-actions .icon-btn svg {
+  display: block;
+}
+
+.input-note {
+  margin-top: 8px;
+  color: #bdbdbd;
+  font-size: 14px;
+}
+
+.max-btn:hover {
+  text-decoration: none;
+}
+
+/* Next button */
+.button {
+  width: 100%;
+  max-width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 999px;
+  background-color: #48ff91;
+  color: #000000; /* text black */
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: none; /* no animation */
+  font-family: "WalletAddressFont", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
+}
+
+.button:hover:not(:disabled) {}
+
+.button:active:not(:disabled) {}
+
+/* Remove blue focus ring and mobile tap highlight */
+.button:focus,
+.button:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+.button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:disabled {
+  opacity: 0.6; /* make it light until user enters amount */
+  cursor: not-allowed;
+}
+
+/* Light theme adjustments */
+@media (prefers-color-scheme: light) {
+  .label {
+    color: #606060;
+  }
+  .input {
+    border-color: #e5e5e5;
+    background-color: #ffffff;
+    color: #111111;
+  }
+  .input::placeholder {
+    color: #9b9b9b;
+  }
+  /* Light mode accent color overrides */
+  .input:focus {
+    border-color: #0702f8;
+  }
+  .button {
+    background-color: #0702f8;
+    color: #ffffff;
+  }
+  .max-btn,
+  .addr-actions .action-btn,
+  .addr-actions .icon-btn {
+    color: #0702f8;
+  }
+  /* Keep amount echo same tone as labels in light mode */
+  .input-note {
+    color: #606060;
+  }
+}
+
+/* Responsive tweaks */
+@media (min-width: 600px) {
+  .form {
+    gap: 20px;
+  }
+}
+
+/* Responsive behavior for Next button placement (inverted) */
+@media (max-width: 480px) {
+  .container {
+    display: block; /* allow normal scroll */
+    min-height: 100svh; /* account for mobile UI bars */
+    padding-top: clamp(24px, 10vh, 96px); /* stronger top padding scaling */
+    padding-bottom: calc(88px + env(safe-area-inset-bottom)); /* space for fixed button */
+  }
+  .button {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(100% - 32px, 480px);
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    margin: 0;
+    z-index: 10;
+  }
+}
+@media (min-width: 481px) {
+  .container {
+    display: block; /* normal flow */
+    min-height: 100vh;
+    padding-top: clamp(16px, 6vh, 56px);
+  }
+  .button {
+    margin-top: 8px; /* sits above after fields on larger screens */
+  }
+}

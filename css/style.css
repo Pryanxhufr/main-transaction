@@ -260,7 +260,7 @@ input[type="number"]::-webkit-inner-spin-button {
   .container {
     display: block; /* allow normal scroll */
     min-height: 100svh; /* account for mobile UI bars */
-    padding-top: clamp(24px, 10vh, 96px); /* stronger top padding scaling */
+    padding-top: clamp(8px, 5vh, 51px); /* further reduced top padding */
     padding-bottom: calc(88px + env(safe-area-inset-bottom)); /* space for fixed button */
   }
   .button {
@@ -277,7 +277,7 @@ input[type="number"]::-webkit-inner-spin-button {
   .container {
     display: block; /* normal flow */
     min-height: 100vh;
-    padding-top: clamp(16px, 6vh, 56px);
+    padding-top: clamp(8px, 4vh, 36px);
   }
   .button {
     margin-top: 8px; /* sits above after fields on larger screens */

